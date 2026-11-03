@@ -9,13 +9,13 @@
 **raw.githubusercontent.com（权威源）：**
 
 ```
-https://raw.githubusercontent.com/DuskWander87/shadowrocket-config/main/shadowrocket.conf
+https://raw.githubusercontent.com/wxlbd/shadowrocket-config/main/shadowrocket.conf
 ```
 
 **jsDelivr CDN（国内推荐，速度更快）：**
 
 ```
-https://cdn.jsdelivr.net/gh/DuskWander87/shadowrocket-config@main/shadowrocket.conf
+https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 ```
 
 ## 使用方法
@@ -92,11 +92,11 @@ https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/
 **自建规则：**
 
 ```
-https://raw.githubusercontent.com/DuskWander87/shadowrocket-config/main/rules/
+https://raw.githubusercontent.com/wxlbd/shadowrocket-config/main/rules/
 ```
 →
 ```
-https://cdn.jsdelivr.net/gh/DuskWander87/shadowrocket-config@main/rules/
+https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/rules/
 ```
 
 文件路径保持不变。
