@@ -27,14 +27,19 @@ Shadowrocket（iOS）代理分流配置。核心策略：国内域名/IP 直连�
 
 代理分流按**首条匹配生效**（first-match-wins），规则顺序即优先级。
 
-`shadowrocket.conf` 的 `[Rule]` 按 `Reject → ChinaDirect → ACL4SSR(含 BanAD) → GEOIP,CN → FINAL` 自上而下匹配。关键约束：
+`shadowrocket.conf` 的 `[Rule]` 按 `AI 固定家宽 → Anthropic IPv6 拒绝 → Reject → ChinaDirect → ACL4SSR(含 BanAD) → GEOIP,CN → FINAL` 自上而下匹配。关键约束：
 
+- **Claude 固定出口规则必须在直连及普通代理规则之前** —— `AI-HOME` 只能包含名为「家宽」的唯一节点，不得加入其他节点、`PROXY`、`DIRECT` 或自动回退；Claude 域名规则必须显式带 `force-remote-dns`。
 - **自定义规则必须在广告拦截之前** —— 否则会被 `BanAD` 抢先拦掉，自定义直连形同虚设。
 - **`FINAL` 必须置于末尾** —— 它匹配一切流量，一旦前移会吞掉后续所有规则，分流形同虚设。
 
 ### IPv6 保持彻底关闭
 
 `shadowrocket.conf` 中 `ipv6 = false` + `prefer-ipv6 = false`，避免 v6 通道绕过 DNS 配置造成泄露。
+
+### STUN 防护
+
+`stun-response-ip = 127.0.0.1` 与 `stun-response-ipv6 = ::1` 仅用于返回本地合成的 STUN 响应，不得替换为真实家宽 IP。这两个参数覆盖客户端「禁用 STUN」开关，可能影响 WebRTC 通话；不得将其描述为关闭 WebRTC 或保证所有浏览器地址信息不泄露。
 
 ### 新增直连域名前必须验证归属
 
