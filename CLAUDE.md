@@ -4,34 +4,37 @@
 
 ## 仓库定位
 
-Shadowrocket（iOS）代理分流配置。核心策略：国内域名/IP 直连，境外走代理，强化 DNS 防泄露与防污染。
-
-> **v2rayN 端已停止维护**（2026-09-27 冻结），`v2rayn/` 目录保留可用。该端的配置说明、维护流程与排查记录归档至 [docs/v2rayn.md](docs/v2rayn.md)，本文件不再承载其约定。
+Shadowrocket 代理分流配置。核心策略：国内域名/IP 直连，境外走代理，强化 DNS 防泄露与防污染。
 
 ## 目录结构
 
 | 路径 | 作用 | 是否手改 |
 |------|------|---------|
-| `shadowrocket.conf` | Shadowrocket 主配置（DNS、Rule、URL Rewrite） | 手改 |
+| `shadowrocket.conf` | Shadowrocket 主配置（DNS、策略组、Rule、URL Rewrite） | 手改 |
 | `rules/ChinaDirect.list` | 国内域名直连补充 | **手改（唯一数据源）** |
+| `rules/ExtraDirect.list` | 115 网盘直连 | **手改（唯一数据源）** |
 | `rules/Reject.list` | 自定义广告/追踪拦截 | **手改（唯一数据源）** |
-| `v2rayn/` | v2rayN 端配置（已停止维护） | 不再维护，见 [docs/v2rayn.md](docs/v2rayn.md) |
+| `rules/ClaudeHome.list` | Claude / Anthropic，固定走「家宽」 | **手改（唯一数据源）** |
+| `rules/GooglePin.list` | 谷歌 AI 与 `dl.google.com`，走「谷歌媒体」 | **手改（唯一数据源）** |
+| `rules/GoogleMedia.list` | 谷歌 / YouTube / X / TikTok / 纸飞机 / 境外视频，走「谷歌媒体」 | **手改（唯一数据源）** |
 
 ## 核心约定
 
 ### DRY：规则数据源唯一
 
-`rules/ChinaDirect.list`（直连）与 `rules/Reject.list`（拦截）各是其规则的**唯一数据源**，通过远程 `RULE-SET` 直接拉取，订阅更新即生效，无需构建。
+`rules/ClaudeHome.list`（家宽）、`rules/ChinaDirect.list`、`rules/ExtraDirect.list`（直连）、`rules/Reject.list`（拦截）、`rules/GooglePin.list` 与 `rules/GoogleMedia.list`（谷歌媒体）各是其规则的**唯一数据源**，通过远程 `RULE-SET` 直接拉取，订阅更新即生效，无需构建。
 
 ### 路由规则顺序绝不可乱改
 
 代理分流按**首条匹配生效**（first-match-wins），规则顺序即优先级。
 
-`shadowrocket.conf` 的 `[Rule]` 按 `AI 固定家宽 → Anthropic IPv6 拒绝 → Reject → ChinaDirect → ACL4SSR(含 BanAD) → GEOIP,CN → FINAL` 自上而下匹配。关键约束：
+`shadowrocket.conf` 的 `[Rule]` 按 `ClaudeHome → Reject → GooglePin → ChinaDirect → ExtraDirect → ACL4SSR 局域网/UnBan/Apple → BanAD → GoogleMedia → ChinaDomain 等 → GEOIP,CN → FINAL` 自上而下匹配。默认出口 `PROXY` 只有名为「家宽」的节点；「谷歌媒体」默认「日本VPS」。关键约束：
 
-- **Claude 固定出口规则必须在直连及普通代理规则之前** —— `AI-HOME` 只能包含名为「家宽」的唯一节点，不得加入其他节点、`PROXY`、`DIRECT` 或自动回退；Claude 域名规则必须显式带 `force-remote-dns`。
-- **自定义规则必须在广告拦截之前** —— 否则会被 `BanAD` 抢先拦掉，自定义直连形同虚设。
-- **`FINAL` 必须置于末尾** —— 它匹配一切流量，一旦前移会吞掉后续所有规则，分流形同虚设。
+- **`ClaudeHome` 必须在其余规则之前** —— Claude / Anthropic 域名与 IPv4 段固定走「家宽」，并带 `force-remote-dns`。晚于直连或谷歌关键词就会被截走。
+- **`GooglePin` 必须在 `UnBan` 之前** —— `dl.google.com` 在 UnBan 里是直连，晚于 UnBan 就会被抢走。该规则集带 `force-remote-dns`。
+- **`GoogleMedia` 必须在 `BanProgramAD` 之后、`ChinaDomain` 之前** —— 宽关键词放前面会接管本应拒绝的广告域名；放后面会被国内域名规则截走。该规则集带 `force-remote-dns`。
+- **自定义直连必须在广告拦截之前** —— 否则会被 `BanAD` 抢先拦掉，自定义直连形同虚设。
+- **`FINAL` 必须置于末尾** —— 它匹配一切未命中流量并走「家宽」，一旦前移会吞掉后续所有规则，分流形同虚设。
 
 ### IPv6 保持彻底关闭
 
@@ -96,4 +99,4 @@ DOMAIN-SUFFIX,lietou-static.com
 
 ## 排查参考
 
-Shadowrocket 端运行时排查见 [docs/troubleshooting.md](docs/troubleshooting.md)；v2rayN 端的排查记录见 [docs/v2rayn.md](docs/v2rayn.md)。遇到代理异常**先查对应文档**，避免误改分流规则——许多"看似分流问题"的症状实为系统层原因。
+运行时排查见 [docs/troubleshooting.md](docs/troubleshooting.md)。遇到代理异常**先查该文档**，避免误改分流规则——许多"看似分流问题"的症状实为系统层原因。

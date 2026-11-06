@@ -1,0 +1,9 @@
+# 115 网盘直连补充
+# DOMAIN-KEYWORD,115 会命中主机名任意位置的 115，范围大于后缀
+# 仓库: https://github.com/wxlbd/shadowrocket-config
+
+# 115网盘 (广东一一五科技股份有限公司)
+DOMAIN-KEYWORD,115
+DOMAIN-SUFFIX,115.com
+DOMAIN-SUFFIX,115cdn.com
+DOMAIN-SUFFIX,anxia.com

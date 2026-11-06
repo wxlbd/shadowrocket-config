@@ -1,0 +1,16 @@
+# Claude / Anthropic 固定走家宽（策略由 shadowrocket.conf 指定为 PROXY）
+# 本表必须排在直连、广告拦截与谷歌媒体规则之前
+# 仓库: https://github.com/wxlbd/shadowrocket-config
+
+# Anthropic 官方域名，一条后缀覆盖 api / platform / sso / downloads / mcp-proxy 等子域
+DOMAIN-SUFFIX,claude.ai
+DOMAIN-SUFFIX,claude.com
+DOMAIN-SUFFIX,claude.app
+DOMAIN-SUFFIX,anthropic.com
+DOMAIN-SUFFIX,claudeusercontent.com
+DOMAIN-SUFFIX,claudemcpcontent.com
+# Claude Code 遥测端点（共享主机，其他应用访问这两条时同样走家宽）
+DOMAIN,http-intake.logs.us5.datadoghq.com
+DOMAIN,browser-intake-us5-datadoghq.com
+# Anthropic 公布的 IPv4 入站范围 160.79.104.0/23 落在此 /21 内
+IP-CIDR,160.79.104.0/21,no-resolve

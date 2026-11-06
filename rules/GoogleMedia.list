@@ -1,0 +1,99 @@
+# 谷歌全服务、YouTube、X、TikTok、纸飞机及其它境外视频站
+# 本表须排在 BanProgramAD 之后、ChinaDomain 之前
+# IP 规则带 no-resolve，不为匹配网段而触发本地解析
+# 仓库: https://github.com/wxlbd/shadowrocket-config
+
+# 谷歌
+DOMAIN-KEYWORD,blogspot
+DOMAIN-KEYWORD,gmail
+DOMAIN-KEYWORD,google
+DOMAIN-KEYWORD,youtube
+DOMAIN-SUFFIX,1e100.net
+DOMAIN-SUFFIX,2mdn.net
+DOMAIN-SUFFIX,app-measurement.net
+DOMAIN-SUFFIX,blogblog.com
+DOMAIN-SUFFIX,blogger.com
+DOMAIN-SUFFIX,c.gle
+DOMAIN-SUFFIX,g.cn
+DOMAIN-SUFFIX,g.co
+DOMAIN-SUFFIX,ggpht.com
+DOMAIN-SUFFIX,goo.gl
+DOMAIN-SUFFIX,goo.gle
+DOMAIN-SUFFIX,goog
+DOMAIN-SUFFIX,googlevideo.com
+DOMAIN-SUFFIX,gstatic.cn
+DOMAIN-SUFFIX,gstatic.com
+DOMAIN-SUFFIX,gvt0.com
+DOMAIN-SUFFIX,gvt1.com
+DOMAIN-SUFFIX,gvt2.com
+DOMAIN-SUFFIX,gvt3.com
+DOMAIN-SUFFIX,recaptcha.com
+DOMAIN-SUFFIX,recaptcha.net
+DOMAIN-SUFFIX,widevine.com
+DOMAIN-SUFFIX,xn--ngstr-lra8j.com
+DOMAIN-SUFFIX,youtu.be
+DOMAIN-SUFFIX,youtube.com
+DOMAIN-SUFFIX,yt.be
+DOMAIN-SUFFIX,ytimg.com
+IP-CIDR,74.125.0.0/16,no-resolve
+IP-CIDR,173.194.0.0/16,no-resolve
+# X
+DOMAIN-KEYWORD,twitter
+DOMAIN-SUFFIX,periscope.tv
+DOMAIN-SUFFIX,pscp.tv
+DOMAIN-SUFFIX,t.co
+DOMAIN-SUFFIX,tweetdeck.com
+DOMAIN-SUFFIX,twimg.co
+DOMAIN-SUFFIX,twimg.com
+DOMAIN-SUFFIX,twimg.org
+DOMAIN-SUFFIX,twitpic.com
+DOMAIN-SUFFIX,twttr.com
+DOMAIN-SUFFIX,twvid.com
+DOMAIN-SUFFIX,vine.co
+DOMAIN-SUFFIX,x.com
+# TikTok（仅 TikTok 自身与海外 CDN，不包含 snssdk 等国内字节域名）
+DOMAIN-KEYWORD,musical.ly
+DOMAIN-KEYWORD,tiktok
+DOMAIN-SUFFIX,byteoversea.com
+DOMAIN-SUFFIX,ibytedtos.com
+DOMAIN-SUFFIX,ibyteimg.com
+DOMAIN-SUFFIX,muscdn.com
+DOMAIN-SUFFIX,tik-tokapi.com
+DOMAIN-SUFFIX,ttwebview.com
+# 境外视频站
+DOMAIN-KEYWORD,instagram
+DOMAIN-SUFFIX,instagr.am
+DOMAIN-KEYWORD,ttvnw
+DOMAIN-SUFFIX,ext-twitch.tv
+DOMAIN-SUFFIX,jtvnw.net
+DOMAIN-SUFFIX,twitch-ext.rootonline.de
+DOMAIN-SUFFIX,twitch.tv
+DOMAIN-SUFFIX,twitchcdn.net
+DOMAIN-SUFFIX,dai.ly
+DOMAIN-SUFFIX,dailymotion.com
+DOMAIN-SUFFIX,dmcdn.net
+DOMAIN-SUFFIX,vimeo.com
+DOMAIN-SUFFIX,vimeocdn.com
+# Telegram
+DOMAIN-KEYWORD,telegram
+DOMAIN-SUFFIX,t.me
+DOMAIN-SUFFIX,tx.me
+DOMAIN-SUFFIX,tdesktop.com
+DOMAIN-SUFFIX,telegra.ph
+DOMAIN-SUFFIX,graph.org
+DOMAIN-SUFFIX,legra.ph
+DOMAIN-SUFFIX,telesco.pe
+IP-CIDR,91.105.192.0/23,no-resolve
+IP-CIDR,91.108.4.0/22,no-resolve
+IP-CIDR,91.108.8.0/22,no-resolve
+IP-CIDR,91.108.12.0/22,no-resolve
+IP-CIDR,91.108.16.0/22,no-resolve
+IP-CIDR,91.108.20.0/22,no-resolve
+IP-CIDR,91.108.56.0/22,no-resolve
+IP-CIDR,149.154.160.0/20,no-resolve
+IP-CIDR,185.76.151.0/24,no-resolve
+IP-CIDR6,2001:67C:4E8::/48,no-resolve
+IP-CIDR6,2001:B28:F23C::/48,no-resolve
+IP-CIDR6,2001:B28:F23D::/48,no-resolve
+IP-CIDR6,2001:B28:F23F::/48,no-resolve
+IP-CIDR6,2A0A:F280::/32,no-resolve

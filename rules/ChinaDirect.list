@@ -2,7 +2,7 @@
 # 收录 ACL4SSR 尚未覆盖的国内厂商 CDN / 静态资源 / 业务 / SDK 域名，统一直连
 # 本表所有域名均为「ACL4SSR ChinaDomain/ChinaMedia 未收录，且 GEOIP,CN 带 no-resolve
 # 不匹配域名请求」者，故需域名级直连；此前提对全表生效，不再逐条复述
-# 仓库: https://github.com/DuskWander87/shadowrocket-config
+# 仓库: https://github.com/wxlbd/shadowrocket-config
 # 更新: 手动维护，新增域名请先通过 domain-verify skill 确认归属
 
 # 字节跳动系
