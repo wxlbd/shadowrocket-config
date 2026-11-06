@@ -229,6 +229,20 @@ DOMAIN-SUFFIX,youzanyun.com
 # 自如 (北京自如信息科技有限公司)
 DOMAIN-SUFFIX,ziroom.com
 
+# 乐刻运动 (杭州乐刻网络技术有限公司)
+DOMAIN-SUFFIX,leoao.com
+DOMAIN-SUFFIX,leoao-inc.com
+
+# 同盾科技 (浙江小盾未来科技有限公司)
+DOMAIN-SUFFIX,tongdun.net
+
+# 向日葵 (上海贝锐信息科技股份有限公司)
+DOMAIN-SUFFIX,oray.com
+DOMAIN-SUFFIX,oray.net
+DOMAIN-SUFFIX,sunlogin.com
+# AweRay 向日葵国际站 (贝锐海外品牌，非国内域名；直连避免代理出口被识别成国际站)
+DOMAIN-SUFFIX,aweray.com
+
 # ===== 以下为归属未确认的特例（置于末尾，与已确认归属的域名区分）=====
 # 收录理由: 归属无法确认, 但 NS 在国内托管商或站点排斥代理出口 IP, 需按直连处理; 置于末尾作为特例, 待归属明确后迁移至上方对应分组或移除
 DOMAIN-SUFFIX,sjxydc.com
