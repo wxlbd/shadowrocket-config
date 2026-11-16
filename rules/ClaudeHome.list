@@ -10,8 +10,13 @@ DOMAIN-SUFFIX,claude.app
 DOMAIN-SUFFIX,anthropic.com
 DOMAIN-SUFFIX,claudeusercontent.com
 DOMAIN-SUFFIX,claudemcpcontent.com
-# Claude Code 遥测端点（共享主机，其他应用访问这两条时同样走家宽）
+# Claude Code 遥测端点（共享主机，其他应用访问这些主机时同样走家宽）
 DOMAIN,http-intake.logs.us5.datadoghq.com
 DOMAIN,browser-intake-us5-datadoghq.com
-# Anthropic 公布的 IPv4 入站范围 160.79.104.0/23 落在此 /21 内
+DOMAIN,o1158394.ingest.us.sentry.io
+# Claude Code 插件元数据与旧版安装包（GCS 共用主机，命中后同样走家宽）
+DOMAIN,storage.googleapis.com
+# Anthropic 公布的 IPv4。入站 160.79.104.0/23 落在 /21 内；入站另有 153.61.224.0/22，出站另有 153.61.208.0/20
 IP-CIDR,160.79.104.0/21,no-resolve
+IP-CIDR,153.61.224.0/22,no-resolve
+IP-CIDR,153.61.208.0/20,no-resolve
