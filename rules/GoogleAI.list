@@ -1,5 +1,5 @@
 # 谷歌 AI 只走 shadowrocket.conf 里的「AI服务」策略组
-# 该组只有名为「家宽」的节点，不回退到「谷歌媒体」、PROXY 或直连
+# 该组只有名为「家宽」的节点，不回退到「其它」、PROXY 或直连
 # 本表必须排在 GooglePin 与 GoogleMedia 之前，否则会被 googleapis.com 后缀或 google 关键词截走
 # 仓库: https://github.com/wxlbd/shadowrocket-config
 

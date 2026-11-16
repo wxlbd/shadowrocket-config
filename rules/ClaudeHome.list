@@ -1,6 +1,6 @@
 # Claude / Anthropic 只走 shadowrocket.conf 里的「AI服务」策略组
-# 该组只有名为「家宽」的节点，不回退到「谷歌媒体」、PROXY 或直连
-# 本表必须排在直连、广告拦截与谷歌媒体规则之前
+# 该组只有名为「家宽」的节点，不回退到「其它」、PROXY 或直连
+# 本表必须排在直连、广告拦截与其它规则之前
 # 仓库: https://github.com/wxlbd/shadowrocket-config
 
 # Anthropic 官方域名，一条后缀覆盖 api / platform / sso / downloads / mcp-proxy 等子域

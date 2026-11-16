@@ -1,4 +1,4 @@
-# 谷歌 API 与官方下载，策略由 shadowrocket.conf 指定为「谷歌媒体」
+# 谷歌 API 与官方下载，策略由 shadowrocket.conf 指定为「其它」
 # 谷歌 AI 在 rules/GoogleAI.list，且必须排在本表之前
 # 本表须排在 ACL4SSR UnBan 之前：UnBan 含 dl.google.com 直连
 # 仓库: https://github.com/wxlbd/shadowrocket-config
