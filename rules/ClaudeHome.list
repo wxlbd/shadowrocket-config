@@ -1,4 +1,5 @@
-# Claude / Anthropic 固定走家宽（策略由 shadowrocket.conf 指定为 PROXY）
+# Claude / Anthropic 只走 shadowrocket.conf 里的「AI服务」策略组
+# 该组只有名为「家宽」的节点，不回退到「谷歌媒体」、PROXY 或直连
 # 本表必须排在直连、广告拦截与谷歌媒体规则之前
 # 仓库: https://github.com/wxlbd/shadowrocket-config
 

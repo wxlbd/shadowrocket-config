@@ -14,27 +14,31 @@ Shadowrocket 代理分流配置。核心策略：国内域名/IP 直连，境外
 | `rules/ChinaDirect.list` | 国内域名直连补充 | **手改（唯一数据源）** |
 | `rules/ExtraDirect.list` | 115 网盘直连 | **手改（唯一数据源）** |
 | `rules/Reject.list` | 自定义广告/追踪拦截 | **手改（唯一数据源）** |
-| `rules/ClaudeHome.list` | Claude / Anthropic，固定走「家宽」 | **手改（唯一数据源）** |
-| `rules/GooglePin.list` | 谷歌 AI 与 `dl.google.com`，走「谷歌媒体」 | **手改（唯一数据源）** |
+| `rules/ClaudeHome.list` | Claude / Anthropic，走「AI服务」 | **手改（唯一数据源）** |
+| `rules/OpenAI.list` | ChatGPT / OpenAI，走「AI服务」 | **手改（唯一数据源）** |
+| `rules/GoogleAI.list` | 谷歌 AI，走「AI服务」 | **手改（唯一数据源）** |
+| `rules/GooglePin.list` | 其余 `googleapis.com` 与 `dl.google.com`，走「谷歌媒体」 | **手改（唯一数据源）** |
 | `rules/GoogleMedia.list` | 谷歌 / YouTube / X / TikTok / 纸飞机 / 境外视频，走「谷歌媒体」 | **手改（唯一数据源）** |
 
 ## 核心约定
 
 ### DRY：规则数据源唯一
 
-`rules/ClaudeHome.list`（家宽）、`rules/ChinaDirect.list`、`rules/ExtraDirect.list`（直连）、`rules/Reject.list`（拦截）、`rules/GooglePin.list` 与 `rules/GoogleMedia.list`（谷歌媒体）各是其规则的**唯一数据源**，通过远程 `RULE-SET` 直接拉取，订阅更新即生效，无需构建。
+`rules/ClaudeHome.list`、`rules/OpenAI.list`、`rules/GoogleAI.list`（AI服务）、`rules/ChinaDirect.list`、`rules/ExtraDirect.list`（直连）、`rules/Reject.list`（拦截）、`rules/GooglePin.list` 与 `rules/GoogleMedia.list`（谷歌媒体）各是其规则的**唯一数据源**，通过远程 `RULE-SET` 直接拉取，订阅更新即生效，无需构建。
 
 ### 路由规则顺序绝不可乱改
 
 代理分流按**首条匹配生效**（first-match-wins），规则顺序即优先级。
 
-`shadowrocket.conf` 的 `[Rule]` 按 `ClaudeHome → Reject → GooglePin → ChinaDirect → ExtraDirect → ACL4SSR 局域网/UnBan/Apple → BanAD → GoogleMedia → ChinaDomain 等 → GEOIP,CN → FINAL` 自上而下匹配。默认出口 `PROXY` 只有名为「家宽」的节点；「谷歌媒体」默认「日本VPS」。关键约束：
+`shadowrocket.conf` 的 `[Rule]` 按 `ClaudeHome → OpenAI → GoogleAI → Reject → GooglePin → ChinaDirect → ExtraDirect → ACL4SSR 局域网/UnBan/Apple → BanAD → GoogleMedia → ChinaDomain 等 → GEOIP,CN → FINAL` 自上而下匹配。`AI服务` 组只有名为「家宽」的节点。`PROXY` 与「谷歌媒体」都是 `fallback`，先「LISA」，失败后再「日本VPS」。关键约束：
 
-- **`ClaudeHome` 必须在其余规则之前** —— Claude / Anthropic 域名与 IPv4 段固定走「家宽」，并带 `force-remote-dns`。晚于直连或谷歌关键词就会被截走。
-- **`GooglePin` 必须在 `UnBan` 之前** —— `dl.google.com` 在 UnBan 里是直连，晚于 UnBan 就会被抢走。该规则集带 `force-remote-dns`。
+- **`AI服务` 策略组只能有「家宽」** —— 类型必须是 `select`，成员只能是名为「家宽」的节点。不得加入 `LISA`、`日本VPS`、`PROXY`、`谷歌媒体`、`DIRECT`，不得改成 `url-test` 或 `fallback`。家宽不可用时连接失败，不降级。组名不绑某一家服务。
+- **`ClaudeHome`、`OpenAI`、`GoogleAI` 必须在其余规则之前，且策略必须是 `AI服务`** —— 这三份域名与 Anthropic IPv4 段只走这个组，并带 `force-remote-dns`。指向 `PROXY` 或「谷歌媒体」，或晚于 `GooglePin`、谷歌关键词，都会改走 LISA / 日本VPS。
+- **`PROXY` 与「谷歌媒体」只放 `LISA`、`日本VPS`** —— 类型必须是 `fallback`，`LISA` 写在前面。不得加入「家宽」或 `AI服务`，否则非 AI 流量会进入家宽，或 AI 故障转移会把家宽流量带出。
+- **`GooglePin` 必须在 `UnBan` 之前** —— `dl.google.com` 在 UnBan 里是直连，晚于 UnBan 就会被抢走。该规则集带 `force-remote-dns`。谷歌 AI 域名不放在这里。
 - **`GoogleMedia` 必须在 `BanProgramAD` 之后、`ChinaDomain` 之前** —— 宽关键词放前面会接管本应拒绝的广告域名；放后面会被国内域名规则截走。该规则集带 `force-remote-dns`。
 - **自定义直连必须在广告拦截之前** —— 否则会被 `BanAD` 抢先拦掉，自定义直连形同虚设。
-- **`FINAL` 必须置于末尾** —— 它匹配一切未命中流量并走「家宽」，一旦前移会吞掉后续所有规则，分流形同虚设。
+- **`FINAL` 必须置于末尾** —— 它匹配一切未命中流量并走 `PROXY`（先 LISA，再日本VPS）。前移会吞掉后续规则；AI 规则若被它盖住，就会离开家宽。
 
 ### IPv6 保持彻底关闭
 

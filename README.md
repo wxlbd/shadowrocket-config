@@ -1,6 +1,6 @@
 # Shadowrocket 防 DNS 泄露配置
 
-基于 [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR) 规则集的 Shadowrocket 配置文件，国内直连，Claude / Anthropic 与其余未匹配的境外流量走家宽，谷歌、YouTube、X、TikTok、纸飞机与境外视频走日本节点。走代理的域名显式远端解析；国内直连域名和节点域名仍使用国内 UDP DNS，不代表全设备 DNS 查询都加密。
+基于 [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR) 规则集的 Shadowrocket 配置文件，国内直连。Claude、谷歌 AI、ChatGPT 只走家宽，家宽不可用时失败。其余走代理的流量优先 LISA，LISA 不可用时降级到日本VPS。走代理的域名显式远端解析；国内直连域名和节点域名仍使用国内 UDP DNS，不代表全设备 DNS 查询都加密。
 
 ## 订阅链接
 
@@ -24,22 +24,23 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 2. 粘贴上述任一订阅链接 → 「下载」
 3. 等待下载完成后，长按该配置 → 「使用配置」
 4. 配置生效后，规则集会自动从远端拉取（首次加载需联网）
-5. 全局路由选择「配置」，确认客户端存在名为「家宽」的节点，以及「谷歌媒体」组里的「日本VPS」和其余日本节点。节点名必须与配置里的名称一致
+5. 全局路由选择「配置」，确认客户端存在名为「家宽」、「LISA」和「日本VPS」的节点。「AI服务」组里只能有「家宽」。`PROXY` 和「谷歌媒体」只应看到 LISA、日本VPS，且 LISA 在前。节点名必须与配置里的名称一致
 
 ## 核心特性
 
 ### DNS 防泄露
 
-- **代理域名远端解析**：Claude 与「谷歌媒体」规则集带有 `force-remote-dns`，其余未匹配域名由 `FINAL,PROXY,force-remote-dns` 兜底并走家宽；IP 规则带 `no-resolve`，避免为了匹配 IP 规则而触发本地解析
+- **代理域名远端解析**：「AI服务」、「谷歌媒体」与 `FINAL` 带有 `force-remote-dns`。AI 域名由家宽解析；其余代理域名由 LISA 或日本VPS 解析。IP 规则带 `no-resolve`，避免为了匹配 IP 规则而触发本地解析
 - **本地解析仅国内 UDP**：阿里/腾讯承担直连域名与代理节点域名的解析，公共 DNS 按递归源 IP 调度，CDN 就近
 - **禁用 IPv6**：避免 v6 通道绕过 DNS 配置造成泄露
 - **拒绝私有 IP 应答**：防 DNS rebinding 攻击
 
 ### 出口
 
-- `PROXY = select,家宽`：策略组里只有名为「家宽」的节点。Claude / Anthropic 由 `rules/ClaudeHome.list` 显式命中这个组；没有写进直连表、也没有被「谷歌媒体」命中的境外域名同样落在这里。
-- `谷歌媒体`：谷歌、YouTube、X、TikTok、纸飞机和列出的境外视频站默认走「日本VPS」，组内其余节点可手动切换。节点名必须与客户端里的名称一致，包括名称中的空格和 `|`。
-- `googleapis.com` 整段后缀和 `dl.google.com` 走「谷歌媒体」，不再被 ACL4SSR `UnBan` 直连。
+- `AI服务 = select,家宽`：Claude、谷歌 AI、ChatGPT 的出口。组内只有名为「家宽」的节点，类型是手动选择，不是故障转移。家宽不可用时这些连接失败，不会改走 LISA、日本VPS、`PROXY` 或直连。
+- `PROXY = fallback,LISA,日本VPS`：没有写进直连表、也没有被「AI服务」命中的境外域名走这里。LISA 可用时用 LISA，LISA 失败后改用日本VPS。
+- `谷歌媒体 = fallback,LISA,日本VPS`：其余谷歌服务、YouTube、X、TikTok、纸飞机和列出的境外视频站，出口与 `PROXY` 相同。
+- 除谷歌 AI 接口以外的 `googleapis.com`，以及 `dl.google.com`，走「谷歌媒体」，不再被 ACL4SSR `UnBan` 直连。
 
 ### URL 重写
 
@@ -49,19 +50,21 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 
 | 序号 | 策略 | 规则 | 说明 |
 |---|---|---|---|
-| 1 | PROXY | Claude / Anthropic | 来源 `rules/ClaudeHome.list`，排在最前，`force-remote-dns`，走「家宽」 |
-| 2 | REJECT | 自定义广告 / 追踪 SDK | 来源 `rules/Reject.list` |
-| 3 | 谷歌媒体 | 谷歌 AI、`dl.google.com` | 来源 `rules/GooglePin.list`，在 UnBan 之前，`force-remote-dns` |
-| 4 | DIRECT | 自定义国内直连域名 | 来源 `rules/ChinaDirect.list` |
-| 5 | DIRECT | 115 网盘 | 来源 `rules/ExtraDirect.list` |
-| 6 | DIRECT | 局域网 / 解禁名单 | ACL4SSR `LocalAreaNetwork.list` / `UnBan.list` |
-| 7 | DIRECT | Apple / App Store | ACL4SSR `Apple.list`，**美区账号不清楚是否有风险** |
-| 8 | REJECT | 广告域名 | ACL4SSR `BanAD.list` / `BanProgramAD.list` |
-| 9 | 谷歌媒体 | 谷歌、YouTube、X、TikTok、纸飞机、境外视频 | 来源 `rules/GoogleMedia.list`，在广告拦截之后、国内域名之前，`force-remote-dns` |
-| 10 | DIRECT | 国内域名 / 流媒体 | ACL4SSR `ChinaDomain.list` / `ChinaMedia.list` |
-| 11 | DIRECT | 国内企业 IP / 国内 IP | ACL4SSR `ChinaCompanyIp.list` / `ChinaIp.list` |
-| 12 | DIRECT | `GEOIP,CN` | 内置 GeoIP 兜底 |
-| 13 | PROXY | 其他流量 | `FINAL,PROXY,force-remote-dns`，走「家宽」 |
+| 1 | AI服务 | Claude / Anthropic | 来源 `rules/ClaudeHome.list`，排在最前，`force-remote-dns`，只走「家宽」，不降级 |
+| 2 | AI服务 | ChatGPT / OpenAI | 来源 `rules/OpenAI.list`，`force-remote-dns`，只走「家宽」，不降级 |
+| 3 | AI服务 | 谷歌 AI | 来源 `rules/GoogleAI.list`，在 `googleapis.com` 后缀和谷歌关键词之前，`force-remote-dns`，只走「家宽」 |
+| 4 | REJECT | 自定义广告 / 追踪 SDK | 来源 `rules/Reject.list` |
+| 5 | 谷歌媒体 | 其余 Google API、`dl.google.com` | 来源 `rules/GooglePin.list`，在 UnBan 之前，`force-remote-dns`，先 LISA，再日本VPS |
+| 6 | DIRECT | 自定义国内直连域名 | 来源 `rules/ChinaDirect.list` |
+| 7 | DIRECT | 115 网盘 | 来源 `rules/ExtraDirect.list` |
+| 8 | DIRECT | 局域网 / 解禁名单 | ACL4SSR `LocalAreaNetwork.list` / `UnBan.list` |
+| 9 | DIRECT | Apple / App Store | ACL4SSR `Apple.list`，**美区账号不清楚是否有风险** |
+| 10 | REJECT | 广告域名 | ACL4SSR `BanAD.list` / `BanProgramAD.list` |
+| 11 | 谷歌媒体 | 谷歌、YouTube、X、TikTok、纸飞机、境外视频 | 来源 `rules/GoogleMedia.list`，在广告拦截之后、国内域名之前，`force-remote-dns`，先 LISA，再日本VPS |
+| 12 | DIRECT | 国内域名 / 流媒体 | ACL4SSR `ChinaDomain.list` / `ChinaMedia.list` |
+| 13 | DIRECT | 国内企业 IP / 国内 IP | ACL4SSR `ChinaCompanyIp.list` / `ChinaIp.list` |
+| 14 | DIRECT | `GEOIP,CN` | 内置 GeoIP 兜底 |
+| 15 | PROXY | 其他流量 | `FINAL,PROXY,force-remote-dns`，先 LISA，再日本VPS |
 
 
 ## 维护
@@ -71,7 +74,7 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 `RULE-SET` 分两类：
 
 - **ACL4SSR 远程规则**：引用 [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR) 仓库，上游更新后下次刷新订阅自动同步，无需手动维护。
-- **自建规则**（`rules/` 目录）：`Reject.list`、`ChinaDirect.list`、`ExtraDirect.list`、`GooglePin.list`、`GoogleMedia.list` 引用本仓库，手动维护，新增域名推送后下次刷新生效。
+- **自建规则**（`rules/` 目录）：`ClaudeHome.list`、`OpenAI.list`、`GoogleAI.list`、`Reject.list`、`ChinaDirect.list`、`ExtraDirect.list`、`GooglePin.list`、`GoogleMedia.list` 引用本仓库，手动维护，新增域名推送后下次刷新生效。
 
 ### 修改配置
 
@@ -84,8 +87,10 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 | `rules/Reject.list` | ACL4SSR 未覆盖的广告 / 追踪 SDK 域名，新增后走 REJECT |
 | `rules/ChinaDirect.list` | ACL4SSR 未覆盖的国内厂商域名，新增后走 DIRECT |
 | `rules/ExtraDirect.list` | 115 网盘直连。`DOMAIN-KEYWORD,115` 会命中主机名任意位置的 `115` |
-| `rules/ClaudeHome.list` | Claude / Anthropic，走「家宽」。必须排在其余规则之前 |
-| `rules/GooglePin.list` | 谷歌 AI 与 `dl.google.com`，走「谷歌媒体」。必须排在 UnBan 之前 |
+| `rules/ClaudeHome.list` | Claude / Anthropic，走「AI服务」。必须排在其余规则之前 |
+| `rules/OpenAI.list` | ChatGPT / OpenAI，走「AI服务」。必须排在其余规则之前 |
+| `rules/GoogleAI.list` | 谷歌 AI，走「AI服务」。必须排在 `GooglePin` 和谷歌关键词之前 |
+| `rules/GooglePin.list` | 其余 `googleapis.com` 与 `dl.google.com`，走「谷歌媒体」。必须排在 UnBan 之前 |
 | `rules/GoogleMedia.list` | 谷歌、YouTube、X、TikTok、纸飞机、境外视频，走「谷歌媒体」。必须排在广告拦截之后 |
 
 新增直连域名前先用 `domain-verify` skill 确认归属，避免误添加抢注域名。

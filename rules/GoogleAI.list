@@ -1,0 +1,40 @@
+# 谷歌 AI 只走 shadowrocket.conf 里的「AI服务」策略组
+# 该组只有名为「家宽」的节点，不回退到「谷歌媒体」、PROXY 或直连
+# 本表必须排在 GooglePin 与 GoogleMedia 之前，否则会被 googleapis.com 后缀或 google 关键词截走
+# 仓库: https://github.com/wxlbd/shadowrocket-config
+
+# Google AI
+DOMAIN-SUFFIX,gemini.google.com
+DOMAIN-SUFFIX,gemini.google
+DOMAIN-SUFFIX,aistudio.google.com
+DOMAIN-SUFFIX,ai.studio
+DOMAIN-SUFFIX,ai.google.dev
+DOMAIN-SUFFIX,bard.google.com
+DOMAIN-SUFFIX,notebooklm.google.com
+DOMAIN-SUFFIX,notebooklm.google
+DOMAIN-SUFFIX,deepmind.com
+DOMAIN-SUFFIX,deepmind.google
+DOMAIN-SUFFIX,generativeai.google
+DOMAIN-SUFFIX,generativelanguage.googleapis.com
+DOMAIN-SUFFIX,makersuite.google.com
+DOMAIN-SUFFIX,labs.google
+DOMAIN-SUFFIX,labs.google.com
+DOMAIN-SUFFIX,jules.google
+DOMAIN-SUFFIX,jules.google.com
+DOMAIN-SUFFIX,flow.google
+DOMAIN-SUFFIX,flow.google.com
+DOMAIN-SUFFIX,antigravity.google
+DOMAIN-SUFFIX,antigravity.google.com
+# Gemini / AI Studio / Jules 等使用的接口主机
+DOMAIN,alkalicore-pa.clients6.google.com
+DOMAIN,alkalimakersuite-pa.clients6.google.com
+DOMAIN,appsgenaiserver-pa.clients6.google.com
+DOMAIN,appsgenaiserver-pa.googleapis.com
+DOMAIN,cloudaicompanion.googleapis.com
+DOMAIN,cloudcode-pa.googleapis.com
+DOMAIN,daily-cloudcode-pa.googleapis.com
+DOMAIN,geminiweb-pa.clients6.google.com
+DOMAIN,notebooklm-pa.googleapis.com
+DOMAIN,proactivebackend-pa.googleapis.com
+DOMAIN,robinfrontend-pa.googleapis.com
+DOMAIN,webchannel-robinfrontend-pa.googleapis.com

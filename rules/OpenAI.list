@@ -1,0 +1,16 @@
+# ChatGPT / OpenAI 只走 shadowrocket.conf 里的「AI服务」策略组
+# 该组只有名为「家宽」的节点，不回退到其它节点或直连
+# 官方允许名单里的 SendGrid、Intercom、WorkOS、Stripe、Sentry、Cloudflare 是共用主机，不收入
+# 仓库: https://github.com/wxlbd/shadowrocket-config
+
+# 官方网络说明中的 OpenAI 自有域名，一条后缀覆盖 api / auth / platform / ws 等子域
+DOMAIN-SUFFIX,openai.com
+DOMAIN-SUFFIX,openai.org
+DOMAIN-SUFFIX,chatgpt.com
+DOMAIN-SUFFIX,oaistatic.com
+DOMAIN-SUFFIX,oaiusercontent.com
+DOMAIN-SUFFIX,oaistatsig.com
+DOMAIN-SUFFIX,openaimerge.com
+# OpenAI 短域名与 Sora
+DOMAIN-SUFFIX,chat.com
+DOMAIN-SUFFIX,sora.com
