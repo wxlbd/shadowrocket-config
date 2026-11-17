@@ -6,3 +6,6 @@
 # ip.net.coffee 中国出口：先 2026.ip138.com，失败再用 my.ip.cn
 DOMAIN-SUFFIX,ip138.com
 DOMAIN,my.ip.cn
+# 检测页自身
+DOMAIN-SUFFIX,ip.net.coffee
+DOMAIN-SUFFIX,ipfinal.com
