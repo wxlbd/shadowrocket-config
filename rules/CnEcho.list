@@ -1,0 +1,8 @@
+# 中国出口回显只走 shadowrocket.conf 里的「AI服务」策略组
+# 该组只有名为「家宽」的节点，不回退到「其它」、PROXY 或直连
+# 检测站用这些主机代表中国出口。本表必须排在 ChinaDomain 与 FINAL 之前，否则 ip138.com 落 PROXY，my.ip.cn 被国内域名直连
+# 仓库: https://github.com/wxlbd/shadowrocket-config
+
+# ip.net.coffee 中国出口：先 2026.ip138.com，失败再用 my.ip.cn
+DOMAIN-SUFFIX,ip138.com
+DOMAIN,my.ip.cn

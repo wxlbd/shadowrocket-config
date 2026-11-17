@@ -1,6 +1,6 @@
 # Shadowrocket 防 DNS 泄露配置
 
-基于 [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR) 规则集的 Shadowrocket 配置文件，国内直连。Claude、谷歌 AI、ChatGPT、Cloudflare 只走家宽，家宽不可用时失败。其余走代理的流量优先 LISA，LISA 不可用时降级到日本VPS。走代理的域名显式远端解析；国内直连域名和节点域名仍使用国内 UDP DNS，不代表全设备 DNS 查询都加密。
+基于 [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR) 规则集的 Shadowrocket 配置文件，国内直连。Claude、谷歌 AI、ChatGPT、Cloudflare 与中国出口回显只走家宽，家宽不可用时失败。其余走代理的流量优先 LISA，LISA 不可用时降级到日本VPS。走代理的域名显式远端解析；国内直连域名和节点域名仍使用国内 UDP DNS，不代表全设备 DNS 查询都加密。
 
 ## 订阅链接
 
@@ -37,7 +37,7 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 
 ### 出口
 
-- `AI服务 = select,家宽`：Claude、谷歌 AI、ChatGPT、Cloudflare 的出口。组内只有名为「家宽」的节点，类型是手动选择，不是故障转移。家宽不可用时这些连接失败，不会改走 LISA、日本VPS、`PROXY` 或直连。
+- `AI服务 = select,家宽`：Claude、谷歌 AI、ChatGPT、Cloudflare 与中国出口回显的出口。组内只有名为「家宽」的节点，类型是手动选择，不是故障转移。家宽不可用时这些连接失败，不会改走 LISA、日本VPS、`PROXY` 或直连。
 - `PROXY = fallback,LISA,日本VPS`：没有写进直连表、也没有被「AI服务」命中的境外域名走这里。LISA 可用时用 LISA，LISA 失败后改用日本VPS。
 - `其它 = fallback,LISA,日本VPS`：其余谷歌服务、YouTube、X、TikTok、纸飞机和列出的境外视频站，出口与 `PROXY` 相同。
 - 除谷歌 AI 接口以外的 `googleapis.com`，以及 `dl.google.com`，走「其它」，不再被 ACL4SSR `UnBan` 直连。
@@ -54,18 +54,19 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 | 2 | AI服务 | ChatGPT / OpenAI | 来源 `rules/OpenAI.list`，`force-remote-dns`，只走「家宽」，不降级 |
 | 3 | AI服务 | 谷歌 AI | 来源 `rules/GoogleAI.list`，在 `googleapis.com` 后缀和谷歌关键词之前，`force-remote-dns`，只走「家宽」 |
 | 4 | AI服务 | Cloudflare | 来源 `rules/Cloudflare.list`，在国内域名与 `FINAL` 之前，`force-remote-dns`，只走「家宽」，不降级 |
-| 5 | REJECT | 自定义广告 / 追踪 SDK | 来源 `rules/Reject.list` |
-| 6 | 其它 | 其余 Google API、`dl.google.com` | 来源 `rules/GooglePin.list`，在 UnBan 之前，`force-remote-dns`，先 LISA，再日本VPS |
-| 7 | DIRECT | 自定义国内直连域名 | 来源 `rules/ChinaDirect.list` |
-| 8 | DIRECT | 115 网盘 | 来源 `rules/ExtraDirect.list` |
-| 9 | DIRECT | 局域网 / 解禁名单 | ACL4SSR `LocalAreaNetwork.list` / `UnBan.list` |
-| 10 | DIRECT | Apple / App Store | ACL4SSR `Apple.list`，**美区账号不清楚是否有风险** |
-| 11 | REJECT | 广告域名 | ACL4SSR `BanAD.list` / `BanProgramAD.list` |
-| 12 | 其它 | 谷歌、YouTube、X、TikTok、纸飞机、境外视频 | 来源 `rules/GoogleMedia.list`，在广告拦截之后、国内域名之前，`force-remote-dns`，先 LISA，再日本VPS |
-| 13 | DIRECT | 国内域名 / 流媒体 | ACL4SSR `ChinaDomain.list` / `ChinaMedia.list` |
-| 14 | DIRECT | 国内企业 IP / 国内 IP | ACL4SSR `ChinaCompanyIp.list` / `ChinaIp.list` |
-| 15 | DIRECT | `GEOIP,CN` | 内置 GeoIP 兜底 |
-| 16 | PROXY | 其他流量 | `FINAL,PROXY,force-remote-dns`，先 LISA，再日本VPS |
+| 5 | AI服务 | 中国出口回显 | 来源 `rules/CnEcho.list`，在 `ChinaDomain` 与 `FINAL` 之前，`force-remote-dns`，只走「家宽」，不降级 |
+| 6 | REJECT | 自定义广告 / 追踪 SDK | 来源 `rules/Reject.list` |
+| 7 | 其它 | 其余 Google API、`dl.google.com` | 来源 `rules/GooglePin.list`，在 UnBan 之前，`force-remote-dns`，先 LISA，再日本VPS |
+| 8 | DIRECT | 自定义国内直连域名 | 来源 `rules/ChinaDirect.list` |
+| 9 | DIRECT | 115 网盘 | 来源 `rules/ExtraDirect.list` |
+| 10 | DIRECT | 局域网 / 解禁名单 | ACL4SSR `LocalAreaNetwork.list` / `UnBan.list` |
+| 11 | DIRECT | Apple / App Store | ACL4SSR `Apple.list`，**美区账号不清楚是否有风险** |
+| 12 | REJECT | 广告域名 | ACL4SSR `BanAD.list` / `BanProgramAD.list` |
+| 13 | 其它 | 谷歌、YouTube、X、TikTok、纸飞机、境外视频 | 来源 `rules/GoogleMedia.list`，在广告拦截之后、国内域名之前，`force-remote-dns`，先 LISA，再日本VPS |
+| 14 | DIRECT | 国内域名 / 流媒体 | ACL4SSR `ChinaDomain.list` / `ChinaMedia.list` |
+| 15 | DIRECT | 国内企业 IP / 国内 IP | ACL4SSR `ChinaCompanyIp.list` / `ChinaIp.list` |
+| 16 | DIRECT | `GEOIP,CN` | 内置 GeoIP 兜底 |
+| 17 | PROXY | 其他流量 | `FINAL,PROXY,force-remote-dns`，先 LISA，再日本VPS |
 
 
 ## 维护
@@ -75,7 +76,7 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 `RULE-SET` 分两类：
 
 - **ACL4SSR 远程规则**：引用 [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR) 仓库，上游更新后下次刷新订阅自动同步，无需手动维护。
-- **自建规则**（`rules/` 目录）：`ClaudeHome.list`、`OpenAI.list`、`GoogleAI.list`、`Cloudflare.list`、`Reject.list`、`ChinaDirect.list`、`ExtraDirect.list`、`GooglePin.list`、`GoogleMedia.list` 引用本仓库，手动维护，新增域名推送后下次刷新生效。
+- **自建规则**（`rules/` 目录）：`ClaudeHome.list`、`OpenAI.list`、`GoogleAI.list`、`Cloudflare.list`、`CnEcho.list`、`Reject.list`、`ChinaDirect.list`、`ExtraDirect.list`、`GooglePin.list`、`GoogleMedia.list` 引用本仓库，手动维护，新增域名推送后下次刷新生效。
 
 ### 修改配置
 
@@ -92,6 +93,7 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 | `rules/OpenAI.list` | ChatGPT / OpenAI，走「AI服务」。必须排在其余规则之前 |
 | `rules/GoogleAI.list` | 谷歌 AI，走「AI服务」。必须排在 `GooglePin` 和谷歌关键词之前 |
 | `rules/Cloudflare.list` | Cloudflare 官方域名与公共 DNS，走「AI服务」。必须排在国内域名和 `FINAL` 之前 |
+| `rules/CnEcho.list` | 检测站的中国出口回显，走「AI服务」。必须排在 `ChinaDomain` 和 `FINAL` 之前 |
 | `rules/GooglePin.list` | 其余 `googleapis.com` 与 `dl.google.com`，走「其它」。必须排在 UnBan 之前 |
 | `rules/GoogleMedia.list` | 谷歌、YouTube、X、TikTok、纸飞机、境外视频，走「其它」。必须排在广告拦截之后 |
 
