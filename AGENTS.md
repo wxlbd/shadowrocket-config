@@ -30,7 +30,9 @@ Shadowrocket 代理分流配置。国内域名和 IP 直连，境外流量按策
 
 分流按首条匹配生效，顺序就是优先级。`[Rule]` 当前自上而下是：
 
-`ClaudeHome → OpenAI → GoogleAI → Cloudflare → CnEcho → Reject → GooglePin → ChinaDirect → ExtraDirect → ACL4SSR 局域网 / UnBan / Apple → BanAD → GoogleMedia → ChinaDomain 等 → GEOIP,CN → FINAL`
+`UDP/443 QUIC 立即拒绝 → ClaudeHome → OpenAI → GoogleAI → Cloudflare → CnEcho → Reject → GooglePin → ChinaDirect → ExtraDirect → ACL4SSR 局域网 / UnBan / Apple → BanAD → GoogleMedia → ChinaDomain 等 → GEOIP,CN → FINAL`
+
+首条只匹配 QUIC，返回 ICMP 端口不可达，客户端马上改用 TCP。TCP 不匹配它。
 
 调整顺序或策略组之前，先写明这条规则现在会被谁截走、改完后会落到哪个组。
 
@@ -45,7 +47,7 @@ Shadowrocket 代理分流配置。国内域名和 IP 直连，境外流量按策
 约束：
 
 - `AI服务` 不得加入 `LISA`、`日本VPS`、`PROXY`、`其它`、`DIRECT`，不得改成 `url-test` 或 `fallback`。名字里带「家宽」的日本节点不是「家宽」，禁止用正则收进这个组。
-- `ClaudeHome`、`OpenAI`、`GoogleAI`、`Cloudflare`、`CnEcho` 必须排在其余规则之前，策略必须是 `AI服务`，并带 `force-remote-dns`。指向 `PROXY` 或「其它」，或晚于 `GooglePin`、谷歌关键词、`ChinaDomain`，这些域名会改走 LISA / 日本VPS 或直连。`CnEcho` 晚于 `ChinaDomain` 时，`my.ip.cn` 被国内域名直连，`ip138.com` 落到 `FINAL`。
+- `ClaudeHome`、`OpenAI`、`GoogleAI`、`Cloudflare`、`CnEcho` 必须排在其余域名规则之前，策略必须是 `AI服务`，并带 `force-remote-dns`。前面的 QUIC 拒绝不匹配 TCP。指向 `PROXY` 或「其它」，或晚于 `GooglePin`、谷歌关键词、`ChinaDomain`，这些域名会改走 LISA / 日本VPS 或直连。`CnEcho` 晚于 `ChinaDomain` 时，`my.ip.cn` 被国内域名直连，`ip138.com` 落到 `FINAL`。
 - `PROXY` 与「其它」只放 `LISA`、`日本VPS`，类型保持 `fallback`，`LISA` 写在前面。不得加入「家宽」或 `AI服务`。
 - `GooglePin` 必须在 `UnBan` 之前，并带 `force-remote-dns`。`dl.google.com` 在 UnBan 里是直连。谷歌 AI 域名不放在这里。
 - `GoogleMedia` 必须在 `BanProgramAD` 之后、`ChinaDomain` 之前，并带 `force-remote-dns`。宽关键词放前面会接管本应拒绝的广告域名，放后面会被国内域名规则截走。

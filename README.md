@@ -50,23 +50,24 @@ https://cdn.jsdelivr.net/gh/wxlbd/shadowrocket-config@main/shadowrocket.conf
 
 | 序号 | 策略 | 规则 | 说明 |
 |---|---|---|---|
-| 1 | AI服务 | Claude / Anthropic | 来源 `rules/ClaudeHome.list`，排在最前，`force-remote-dns`，只走「家宽」，不降级 |
-| 2 | AI服务 | ChatGPT / OpenAI | 来源 `rules/OpenAI.list`，`force-remote-dns`，只走「家宽」，不降级 |
-| 3 | AI服务 | 谷歌 AI | 来源 `rules/GoogleAI.list`，在 `googleapis.com` 后缀和谷歌关键词之前，`force-remote-dns`，只走「家宽」 |
-| 4 | AI服务 | Cloudflare | 来源 `rules/Cloudflare.list`，在国内域名与 `FINAL` 之前，`force-remote-dns`，只走「家宽」，不降级 |
-| 5 | AI服务 | 中国出口回显 | 来源 `rules/CnEcho.list`，在 `ChinaDomain` 与 `FINAL` 之前，`force-remote-dns`，只走「家宽」，不降级 |
-| 6 | REJECT | 自定义广告 / 追踪 SDK | 来源 `rules/Reject.list` |
-| 7 | 其它 | 其余 Google API、`dl.google.com` | 来源 `rules/GooglePin.list`，在 UnBan 之前，`force-remote-dns`，先 LISA，再日本VPS |
-| 8 | DIRECT | 自定义国内直连域名 | 来源 `rules/ChinaDirect.list` |
-| 9 | DIRECT | 115 网盘 | 来源 `rules/ExtraDirect.list` |
-| 10 | DIRECT | 局域网 / 解禁名单 | ACL4SSR `LocalAreaNetwork.list` / `UnBan.list` |
-| 11 | DIRECT | Apple / App Store | ACL4SSR `Apple.list`，**美区账号不清楚是否有风险** |
-| 12 | REJECT | 广告域名 | ACL4SSR `BanAD.list` / `BanProgramAD.list` |
-| 13 | 其它 | 谷歌、YouTube、X、TikTok、纸飞机、境外视频 | 来源 `rules/GoogleMedia.list`，在广告拦截之后、国内域名之前，`force-remote-dns`，先 LISA，再日本VPS |
-| 14 | DIRECT | 国内域名 / 流媒体 | ACL4SSR `ChinaDomain.list` / `ChinaMedia.list` |
-| 15 | DIRECT | 国内企业 IP / 国内 IP | ACL4SSR `ChinaCompanyIp.list` / `ChinaIp.list` |
-| 16 | DIRECT | `GEOIP,CN` | 内置 GeoIP 兜底 |
-| 17 | PROXY | 其他流量 | `FINAL,PROXY,force-remote-dns`，先 LISA，再日本VPS |
+| 1 | REJECT-NO-DROP | QUIC（UDP/443） | 立刻返回 ICMP 端口不可达，客户端马上改用 TCP。TCP 不匹配这条 |
+| 2 | AI服务 | Claude / Anthropic | 来源 `rules/ClaudeHome.list`，域名规则的第一条，`force-remote-dns`，只走「家宽」，不降级 |
+| 3 | AI服务 | ChatGPT / OpenAI | 来源 `rules/OpenAI.list`，`force-remote-dns`，只走「家宽」，不降级 |
+| 4 | AI服务 | 谷歌 AI | 来源 `rules/GoogleAI.list`，在 `googleapis.com` 后缀和谷歌关键词之前，`force-remote-dns`，只走「家宽」 |
+| 5 | AI服务 | Cloudflare | 来源 `rules/Cloudflare.list`，在国内域名与 `FINAL` 之前，`force-remote-dns`，只走「家宽」，不降级 |
+| 6 | AI服务 | 中国出口回显 | 来源 `rules/CnEcho.list`，在 `ChinaDomain` 与 `FINAL` 之前，`force-remote-dns`，只走「家宽」，不降级 |
+| 7 | REJECT | 自定义广告 / 追踪 SDK | 来源 `rules/Reject.list` |
+| 8 | 其它 | 其余 Google API、`dl.google.com` | 来源 `rules/GooglePin.list`，在 UnBan 之前，`force-remote-dns`，先 LISA，再日本VPS |
+| 9 | DIRECT | 自定义国内直连域名 | 来源 `rules/ChinaDirect.list` |
+| 10 | DIRECT | 115 网盘 | 来源 `rules/ExtraDirect.list` |
+| 11 | DIRECT | 局域网 / 解禁名单 | ACL4SSR `LocalAreaNetwork.list` / `UnBan.list` |
+| 12 | DIRECT | Apple / App Store | ACL4SSR `Apple.list`，**美区账号不清楚是否有风险** |
+| 13 | REJECT | 广告域名 | ACL4SSR `BanAD.list` / `BanProgramAD.list` |
+| 14 | 其它 | 谷歌、YouTube、X、TikTok、纸飞机、境外视频 | 来源 `rules/GoogleMedia.list`，在广告拦截之后、国内域名之前，`force-remote-dns`，先 LISA，再日本VPS |
+| 15 | DIRECT | 国内域名 / 流媒体 | ACL4SSR `ChinaDomain.list` / `ChinaMedia.list` |
+| 16 | DIRECT | 国内企业 IP / 国内 IP | ACL4SSR `ChinaCompanyIp.list` / `ChinaIp.list` |
+| 17 | DIRECT | `GEOIP,CN` | 内置 GeoIP 兜底 |
+| 18 | PROXY | 其他流量 | `FINAL,PROXY,force-remote-dns`，先 LISA，再日本VPS |
 
 
 ## 维护
