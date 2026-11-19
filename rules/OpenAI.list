@@ -26,7 +26,5 @@ DOMAIN,images.workoscdn.com
 DOMAIN,setup.workos.com
 DOMAIN,workos.imgix.net
 # challenges.cloudflare.com 由 rules/Cloudflare.list 的 cloudflare.com 后缀覆盖
+# sentry.io 与主机名含 datadog 的地址由 rules/ClaudeHome.list 覆盖，同走「AI服务」
 DOMAIN,js.stripe.com
-DOMAIN,o207216.ingest.sentry.io
-DOMAIN,o33249.ingest.sentry.io
-DOMAIN,rum.browser-intake-datadoghq.com

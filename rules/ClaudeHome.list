@@ -1,6 +1,7 @@
-# Claude / Anthropic 只走 shadowrocket.conf 里的「AI服务」策略组
+# Claude / Anthropic 与 NTP 时间服务器只走 shadowrocket.conf 里的「AI服务」策略组
 # 该组只有名为「家宽」的节点，不回退到「其它」、PROXY 或直连
 # 本表必须排在直连、广告拦截与其它规则之前
+# Shadowrocket 无 GEOSITE。geosite:anthropic 与 geosite:category-ntp 在下面按 v2fly 分类展开
 # 仓库: https://github.com/wxlbd/shadowrocket-config
 
 # Anthropic 官方域名，一条后缀覆盖 api / platform / sso / downloads / mcp-proxy 等子域
@@ -10,12 +11,157 @@ DOMAIN-SUFFIX,claude.app
 DOMAIN-SUFFIX,anthropic.com
 DOMAIN-SUFFIX,claudeusercontent.com
 DOMAIN-SUFFIX,claudemcpcontent.com
-# Claude Code 遥测端点（共享主机，其他应用访问这些主机时同样走家宽）
+DOMAIN-SUFFIX,claudemcpclient.com
+DOMAIN-SUFFIX,clau.de
+# geosite:anthropic 中的其余自有域名
+DOMAIN-SUFFIX,ant.dev
+DOMAIN-SUFFIX,anthropic.team
+DOMAIN-SUFFIX,antspace.dev
+DOMAIN-SUFFIX,chatbotclaude.com
+DOMAIN-SUFFIX,claude.dev
+DOMAIN-SUFFIX,claude.new
+DOMAIN-SUFFIX,claude.site
+DOMAIN-SUFFIX,claudeacademy.com
+DOMAIN-SUFFIX,claudepages.dev
+DOMAIN-SUFFIX,claudestudio.com
+# 官网静态资源、旧登录与博客。anthropic.com.cdn.cloudflare.net 由 Cloudflare.list 覆盖
+DOMAIN,servd-anthropic-website.b-cdn.net
+DOMAIN,anthropic.auth0.com
+DOMAIN,anthropic-com.ghost.io
+# 证件核验。maps.googleapis.com 写在这里，避免被 GooglePin 的 googleapis.com 后缀送进「其它」
+DOMAIN,maps.googleapis.com
+DOMAIN-SUFFIX,withpersona.com
+DOMAIN-SUFFIX,frompersona.com
+# 访问统计。intercom.io 与 intercomcdn.com 在 OpenAI.list，同一策略组
+DOMAIN,cdn.usefathom.com
+# 遥测与反欺诈。us5 的 Datadog 接收端不是 datadoghq.com 的子域，精确主机要单独写
+# 关键词兜底覆盖其它区域端点，以及主机名里带 datadog / sentry / sift 的地址。其它应用命中这些名字时同样走家宽
 DOMAIN,http-intake.logs.us5.datadoghq.com
 DOMAIN,browser-intake-us5-datadoghq.com
-DOMAIN,o1158394.ingest.us.sentry.io
+DOMAIN-SUFFIX,sentry.io
+DOMAIN-SUFFIX,statsigapi.net
+DOMAIN-KEYWORD,datadog
+DOMAIN-KEYWORD,sentry
+DOMAIN-KEYWORD,sift
 # Claude Code 插件元数据与旧版安装包（GCS 共用主机，命中后同样走家宽）
 DOMAIN,storage.googleapis.com
+# geosite:category-ntp。放在本表才能先于后面的规则命中
+# time.apple.com 否则被 Apple 直连；time.google.com 否则被 GoogleMedia 的 google 关键词送进「其它」
+# 阿里云、腾讯与 ntp.org.cn 否则被 ChinaDomain 直连。time.cloudflare.com 由 Cloudflare.list 覆盖
+DOMAIN,time.apple.com
+DOMAIN,time.asia.apple.com
+DOMAIN,time.euro.apple.com
+DOMAIN,time.aws.com
+DOMAIN,time.amazonaws.cn
+DOMAIN,time.facebook.com
+DOMAIN,time1.facebook.com
+DOMAIN,time2.facebook.com
+DOMAIN,time3.facebook.com
+DOMAIN,time4.facebook.com
+DOMAIN,time5.facebook.com
+DOMAIN,time.google.com
+DOMAIN,time1.google.com
+DOMAIN,time2.google.com
+DOMAIN,time3.google.com
+DOMAIN,time4.google.com
+DOMAIN,ntp.ubuntu.com
+DOMAIN,time.windows.com
+DOMAIN,ut1-wwv.nist.gov
+DOMAIN,ntp-b.nist.gov
+DOMAIN,ntp-d.nist.gov
+DOMAIN,ntp-wwv.nist.gov
+DOMAIN,time.nist.gov
+DOMAIN,time-a-g.nist.gov
+DOMAIN,time-b-g.nist.gov
+DOMAIN,time-c-g.nist.gov
+DOMAIN,time-d-g.nist.gov
+DOMAIN,time-e-g.nist.gov
+DOMAIN,time-a-b.nist.gov
+DOMAIN,time-b-b.nist.gov
+DOMAIN,time-c-b.nist.gov
+DOMAIN,time-d-b.nist.gov
+DOMAIN,time-e-b.nist.gov
+DOMAIN,time-a-wwv.nist.gov
+DOMAIN,time-b-wwv.nist.gov
+DOMAIN,time-c-wwv.nist.gov
+DOMAIN,time-d-wwv.nist.gov
+DOMAIN,time-e-wwv.nist.gov
+DOMAIN,ntp-c.colorado.edu
+DOMAIN,ut1-time.colorado.edu
+DOMAIN,utcnist.colorado.edu
+DOMAIN,utcnist2.colorado.edu
+DOMAIN,utcnist3.colorado.edu
+DOMAIN,ntp0.ntp-servers.net
+DOMAIN,ntp1.ntp-servers.net
+DOMAIN,ntp2.ntp-servers.net
+DOMAIN,ntp3.ntp-servers.net
+DOMAIN,ntp4.ntp-servers.net
+DOMAIN,ntp5.ntp-servers.net
+DOMAIN,ntp6.ntp-servers.net
+DOMAIN,ntp7.ntp-servers.net
+DOMAIN,ntp.time.nl
+DOMAIN,ntp1.time.nl
+DOMAIN,ntp2.time.nl
+DOMAIN,ntppool1.time.nl
+DOMAIN,ntppool2.time.nl
+DOMAIN-SUFFIX,clock.isc.org
+DOMAIN-SUFFIX,ntp.fiord.ru
+DOMAIN-SUFFIX,ntp.nat.ms
+DOMAIN-SUFFIX,ntp.nic.cz
+DOMAIN-SUFFIX,ntp.ripe.net
+DOMAIN-SUFFIX,ntp.se
+DOMAIN-SUFFIX,ntp.ufe.cz
+DOMAIN-SUFFIX,pool.ntp.org
+DOMAIN-SUFFIX,time.nrc.ca
+DOMAIN,ntp.aliyun.com
+DOMAIN,ntp1.aliyun.com
+DOMAIN,ntp2.aliyun.com
+DOMAIN,ntp3.aliyun.com
+DOMAIN,ntp4.aliyun.com
+DOMAIN,ntp5.aliyun.com
+DOMAIN,ntp6.aliyun.com
+DOMAIN,ntp7.aliyun.com
+DOMAIN,ntp.tencent.com
+DOMAIN,ntp1.tencent.com
+DOMAIN,ntp2.tencent.com
+DOMAIN,ntp3.tencent.com
+DOMAIN,ntp4.tencent.com
+DOMAIN,ntp5.tencent.com
+DOMAIN,time.izatcloud.net
+DOMAIN,time.xtracloud.net
+DOMAIN,izattime.qcomgeo2.com
+DOMAIN,xtratime.qcomgeo2.com
+DOMAIN-SUFFIX,ntp.neu.edu.cn
+DOMAIN-SUFFIX,ntp.ntsc.ac.cn
+DOMAIN-SUFFIX,ntp.org.cn
+DOMAIN-SUFFIX,ats1.e-timing.ne.jp
+DOMAIN-SUFFIX,ntp.jst.mfeed.ad.jp
+DOMAIN-SUFFIX,ntp1.jst.mfeed.ad.jp
+DOMAIN-SUFFIX,ntp2.jst.mfeed.ad.jp
+DOMAIN-SUFFIX,ntp3.jst.mfeed.ad.jp
+DOMAIN-SUFFIX,ntp1.v6.mfeed.ad.jp
+DOMAIN-SUFFIX,ntp2.v6.mfeed.ad.jp
+DOMAIN-SUFFIX,ntp3.v6.mfeed.ad.jp
+DOMAIN-SUFFIX,s2csntp.miz.nao.ac.jp
+DOMAIN-SUFFIX,ntp.nict.jp
+DOMAIN-SUFFIX,ntp-tk01.ocn.ad.jp
+DOMAIN-SUFFIX,ntp-tk02.ocn.ad.jp
+DOMAIN-SUFFIX,ntp-os01.ocn.ad.jp
+DOMAIN-SUFFIX,ntp1.plala.or.jp
+DOMAIN-SUFFIX,ntp2.plala.or.jp
+DOMAIN-SUFFIX,ntp.ring.gr.jp
+DOMAIN-SUFFIX,ntp0.ring.gr.jp
+DOMAIN-SUFFIX,ntp1.ring.gr.jp
+DOMAIN-SUFFIX,ntp2.ring.gr.jp
+DOMAIN-SUFFIX,ntp.t.ring.gr.jp
+DOMAIN-SUFFIX,ntp.dnsbalance.ring.gr.jp
+DOMAIN-SUFFIX,ntp.nc.u-tokyo.ac.jp
+DOMAIN-SUFFIX,ntp.tohoku.ac.jp
+DOMAIN-SUFFIX,ntp1.tohoku.ac.jp
+DOMAIN-SUFFIX,ntp2.tohoku.ac.jp
+DOMAIN-SUFFIX,ntp.tut.ac.jp
+DOMAIN-SUFFIX,ntp1.wakwak.com
+DOMAIN-SUFFIX,ntp2.wakwak.com
 # Anthropic 公布的 IPv4。入站 160.79.104.0/23 落在 /21 内；入站另有 153.61.224.0/22，出站另有 153.61.208.0/20
 IP-CIDR,160.79.104.0/21,no-resolve
 IP-CIDR,153.61.224.0/22,no-resolve
