@@ -17,8 +17,29 @@ DOMAIN-SUFFIX,chat.com
 DOMAIN-SUFFIX,sora.com
 # 官方允许名单中的共用主机。后缀只用于名单写成通配的域，其余精确到主机
 DOMAIN-SUFFIX,ct.sendgrid.net
+# 客服与附件。整域走家宽，其它站点的 Intercom 同样经过这里
+DOMAIN-SUFFIX,intercom.com
 DOMAIN-SUFFIX,intercom.io
+DOMAIN-SUFFIX,intercom.help
 DOMAIN-SUFFIX,intercomcdn.com
+DOMAIN-SUFFIX,intercomcdn.eu
+DOMAIN-SUFFIX,intercomassets.com
+DOMAIN-SUFFIX,intercomassets.eu
+DOMAIN-SUFFIX,intercomusercontent.com
+DOMAIN-SUFFIX,intercom-messenger.com
+DOMAIN-SUFFIX,intercom-sheets.com
+DOMAIN-SUFFIX,intercom-reporting.com
+DOMAIN-SUFFIX,intercom-attachments.com
+DOMAIN-SUFFIX,intercom-attachments.eu
+DOMAIN-SUFFIX,intercom-attachments-1.com
+DOMAIN-SUFFIX,intercom-attachments-2.com
+DOMAIN-SUFFIX,intercom-attachments-3.com
+DOMAIN-SUFFIX,intercom-attachments-4.com
+DOMAIN-SUFFIX,intercom-attachments-5.com
+DOMAIN-SUFFIX,intercom-attachments-6.com
+DOMAIN-SUFFIX,intercom-attachments-7.com
+DOMAIN-SUFFIX,intercom-attachments-8.com
+DOMAIN-SUFFIX,intercom-attachments-9.com
 DOMAIN,cdn.workos.com
 DOMAIN,forwarder.workos.com
 DOMAIN,frontend-apps-multi-region.workos.com
@@ -26,5 +47,9 @@ DOMAIN,images.workoscdn.com
 DOMAIN,setup.workos.com
 DOMAIN,workos.imgix.net
 # challenges.cloudflare.com 由 rules/Cloudflare.list 的 cloudflare.com 后缀覆盖
-# sentry.io 与主机名含 datadog 的地址由 rules/ClaudeHome.list 覆盖，同走「AI服务」
-DOMAIN,js.stripe.com
+# sentry.io 与主机名含 datadog / sift 的地址由 rules/ClaudeHome.list 覆盖，同走「AI服务」
+# 支付与风控。stripe.com 整域走家宽，其它站点的 Stripe 同样经过这里
+# m.stripe.network 与 stripecdn.com 不在 stripe.com 下
+DOMAIN-SUFFIX,stripe.com
+DOMAIN,m.stripe.network
+DOMAIN-SUFFIX,stripecdn.com

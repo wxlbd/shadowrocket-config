@@ -32,7 +32,7 @@ DOMAIN,anthropic-com.ghost.io
 DOMAIN,maps.googleapis.com
 DOMAIN-SUFFIX,withpersona.com
 DOMAIN-SUFFIX,frompersona.com
-# 访问统计。intercom.io 与 intercomcdn.com 在 OpenAI.list，同一策略组
+# 访问统计。Intercom 在 OpenAI.list，同一策略组
 DOMAIN,cdn.usefathom.com
 # 遥测与反欺诈。us5 的 Datadog 接收端不是 datadoghq.com 的子域，精确主机要单独写
 # 关键词兜底覆盖其它区域端点，以及主机名里带 datadog / sentry / sift 的地址。其它应用命中这些名字时同样走家宽
